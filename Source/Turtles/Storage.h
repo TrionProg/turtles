@@ -8,6 +8,8 @@
 
 extern AStorage* STORAGE;
 
+//Storage which stores models and assets and may unload them
+
 UCLASS()
 class TURTLES_API AStorage : public AActor
 {
@@ -24,7 +26,7 @@ private:
 	void initialize();
 
 public:
-	static AStorage& GetStorage();
+	static AStorage& GetStorage(UWorld* world);
 
 	AStorage();
 	~AStorage();

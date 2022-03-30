@@ -2,4 +2,10 @@
 
 
 #include "TurtlesGameMode.h"
+#include "Storage.h"
 
+void ATurtlesGameMode::BeginPlay() {
+	Super::BeginPlay();
+
+	AStorage::create(GetWorld());
+}

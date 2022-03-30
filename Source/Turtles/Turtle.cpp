@@ -13,12 +13,14 @@ const float TURTLE_SPEED = 300;
 // Sets default values
 ATurtle::ATurtle()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Pivot = CreateDefaultSubobject<USceneComponent>(TEXT("Pivot"));
 
+	//I can make movement component, collision and move turtle by NavMesh, but I have no time for that and task do not says about it.
+
 	RootComponent = Pivot;
+	Body = nullptr; //Body will be loaded in BeginPlay, that is why user can not see body in icon of asset, I've made it for lulz.
 
 	Pivot->SetMobility(EComponentMobility::Type::Movable);
 }
@@ -30,16 +32,19 @@ void ATurtle::BeginPlay()
 
 	Body = NewObject <UStaticMeshComponent>(this);
 
-	UStaticMesh* BodyMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, TEXT("/Game/Models/trionix")));
-	auto Result = Body->SetStaticMesh(BodyMesh);
+	//Load model, which stored in Storage, Storage has been crated by GameMode::BeginPlay
+	//I've tryed two ways to store static mesh, but UObjectLibrary is strange because where are not key->value access to assets
+	//Storage is just an Cache, it may anload models if it is needed(in the future)
+	AStorage& Storage = AStorage::GetStorage(GetWorld());
+	auto Result = Body->SetStaticMesh(Storage.TrionixBody);
 	Body->SetupAttachment(Pivot);
 	check(Result != false);
 
-	//auto Storage = UObjectLibrary::CreateLibrary(UObjectLibrary::StaticClass(), false, GIsEditor);
-
 	/*
-	AStorage& Storage = AStorage::GetStorage();
-	auto Result = Body->SetStaticMesh(Storage.TrionixBody);
+	//Or load model from file
+	UStaticMesh* BodyMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, TEXT("/Game/Models/trionix")));
+	auto Result = Body->SetStaticMesh(BodyMesh);
+	Body->SetupAttachment(Pivot);
 	check(Result != false);
 	*/
 
@@ -62,32 +67,28 @@ void ATurtle::Tick(float DeltaTime)
 		MoveTurtle(DeltaTime);
 	}
 }
-/*
-void ATurtle::MoveTurtle(float DeltaTime) {
-	MoveForward(DeltaTime);
-}
-*/
+
 
 void ATurtle::MoveForward(float DeltaTime){
-	auto location = GetActorLocation();
-	auto new_location = FVector(
-		location.X,
-		location.Y + TURTLE_SPEED * DeltaTime,
-		location.Z
+	auto Location = GetActorLocation();
+	auto NewLocation = FVector(
+		Location.X,
+		Location.Y + TURTLE_SPEED * DeltaTime,
+		Location.Z
 	);
 
-	SetActorLocation(new_location);
+	SetActorLocation(NewLocation);
 }
 
 void ATurtle::MoveBackward(float DeltaTime){
-	auto location = GetActorLocation();
-	auto new_location = FVector(
-		location.X,
-		location.Y - TURTLE_SPEED * DeltaTime,
-		location.Z
+	auto Location = GetActorLocation();
+	auto NewLocation = FVector(
+		Location.X,
+		Location.Y - TURTLE_SPEED * DeltaTime,
+		Location.Z
 	);
 
-	SetActorLocation(new_location);
+	SetActorLocation(NewLocation);
 }
 
 UWorld& ATurtle::get_world() {
@@ -125,12 +126,3 @@ bool ATurtle::CheckDestinationReached() {
 void ATurtle::SetDestination(ADestination* NewDestination) {
 	Destination = NewDestination;
 }
-/*
-// Called to bind functionality to input
-void ATurtle::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-*/
-

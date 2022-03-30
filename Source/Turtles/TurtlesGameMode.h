@@ -14,4 +14,6 @@ class TURTLES_API ATurtlesGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+protected:
+	virtual void BeginPlay() override;
 };

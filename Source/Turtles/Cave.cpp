@@ -49,7 +49,7 @@ void ACave::Tick(float DeltaTime)
 	}
 }
 
-void ACave::spawn_turtle() {
+void ACave::SpawnTurtle() {
 	if (SpawnInterval == 0) {
 		SpawnInterval = SPAWN_INTERVAL;
 

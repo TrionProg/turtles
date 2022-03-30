@@ -31,11 +31,11 @@ public:
 	void CreateHUD();
 
 private:
-	void on_lmb_release();
-	void on_quit_press();
+	void OnLMBRelase();
+	void on_quit_press();//In my engine I am using camel case because it is more readable, I can differ UE4 and my methods and I have no conflicts with Variables/Methods/Blueprint Nodes from UE
 
-	ASpectator& get_spectator();
+	ASpectator& GetSpectator();
 	UWorld& get_world();
 
-	void spawn_turtle();
+	void SpawnTurtle();
 };

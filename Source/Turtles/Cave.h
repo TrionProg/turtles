@@ -33,7 +33,7 @@ public:
 	// Sets default values for this actor's properties
 	ACave();
 
-	void spawn_turtle();
+	void SpawnTurtle();
 
 private:
 	UWorld& get_world();

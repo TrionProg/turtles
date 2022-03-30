@@ -30,22 +30,23 @@ void ATurtlePlayerController::SetupInputComponent() {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("MouseLeftButton", IE_Released, this, &ATurtlePlayerController::on_lmb_release);
+	InputComponent->BindAction("MouseLeftButton", IE_Released, this, &ATurtlePlayerController::OnLMBRelase);
 	InputComponent->BindAction("Quit", IE_Released, this, &ATurtlePlayerController::on_quit_press).bExecuteWhenPaused = true;
+	InputComponent->BindAction("Esc", IE_Released, this, &ATurtlePlayerController::on_quit_press).bExecuteWhenPaused = true;
 
 }
 
-void ATurtlePlayerController::on_lmb_release() {
-	spawn_turtle();
+void ATurtlePlayerController::OnLMBRelase() {
+	SpawnTurtle();
 }
 
 void ATurtlePlayerController::on_quit_press() {
 	UKismetSystemLibrary::QuitGame(&get_world(), this, EQuitPreference::Type::Quit, true); 
 }
 
-ASpectator& ATurtlePlayerController::get_spectator() {
+ASpectator& ATurtlePlayerController::GetSpectator() {
 	auto pawn = GetPawn();
-	auto spectator = (ASpectator*)pawn;
+	auto spectator = (ASpectator*)pawn; //conflict with field of APlayerController
 
 	check(spectator != nullptr);
 
@@ -58,7 +59,7 @@ UWorld& ATurtlePlayerController::get_world() {
 	return *world;
 }
 
-void ATurtlePlayerController::spawn_turtle() {
+void ATurtlePlayerController::SpawnTurtle() {
 	FHitResult TraceHitResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, false, TraceHitResult)) {
 		FVector cursor_position = TraceHitResult.Location;
@@ -75,7 +76,7 @@ void ATurtlePlayerController::spawn_turtle() {
 				auto Dist = FVector::Dist2D(cursor_position, Location);
 
 				if (Dist < CAVE_SELECTION_RADIUS) {
-					Cave->spawn_turtle();
+					Cave->SpawnTurtle();
 				}
 			}
 		}

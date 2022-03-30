@@ -11,7 +11,6 @@ AFinishParticles::AFinishParticles()
 	UParticleSystem* FinishParticles = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), NULL, TEXT("/Game/Particles/FinishParticles")));
 	Particles = CreateDefaultSubobject<UParticleSystemComponent>("Particles");
 	Particles->SetTemplate(FinishParticles);
-	//Particles->SetRelativeScale3D(FVector(3, 3, 3));
 
 	RootComponent = Particles;
 

@@ -5,27 +5,22 @@
 #include "Engine/World.h"
 #include "CoreMinimal.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameModeBase.h"
 
-// Sets default values
-AStorage* STORAGE;
-
-//TODO finalize, get
+AStorage* STORAGE = nullptr;
 
 void AStorage::create(UWorld* world) {
-	//TODO we need set path on initialization
-	//FString AbsoluteFilePath = FPaths::GameDir();
+	if (world != nullptr) {
+		FActorSpawnParameters ActorSpawnParams;
+		ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	//MY_LOG(LogTemp, Warning, TEXT("AbsoluteFilePath %s"), *AbsoluteFilePath);
+		auto storage = world->SpawnActor<AStorage>(AStorage::StaticClass(), FVector(0), FRotator(0), ActorSpawnParams);
+		check(storage != nullptr);
 
-	FActorSpawnParameters ActorSpawnParams;
-	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		STORAGE = storage;
 
-	auto storage = world->SpawnActor<AStorage>(AStorage::StaticClass(), FVector(0), FRotator(0), ActorSpawnParams);
-	check(storage != nullptr);
-
-	STORAGE = storage;
-
-	storage->initialize();
+		storage->initialize();
+	}
 }
 
 void AStorage::initialize() {
@@ -35,18 +30,14 @@ void AStorage::initialize() {
 	UE_LOG(LogTemp, Warning, TEXT("AStorage initialized"));
 }
 
-AStorage& AStorage::GetStorage() {
-	/*
+AStorage& AStorage::GetStorage(UWorld* world) {
 	if (STORAGE == nullptr) {
-		auto GameMode = UGameplayStatics::GetGameMode(nullptr);
-		check(GameMode != nullptr);
-		auto World = GameMode->GetWorld();
-		check(World != nullptr);
+		UE_LOG(LogTemp, Warning, TEXT("AStorage not found -- create it and load models"));
+		check(world != nullptr);
 
-		AStorage::create(World);
+		AStorage::create(world);
 		check(STORAGE != nullptr);
 	}
-	*/
 
 	return *STORAGE;
 }
